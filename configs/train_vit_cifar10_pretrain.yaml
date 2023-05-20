@@ -1,0 +1,31 @@
+MODEL:
+  NAME: 'vit'
+  CLASSES: 10
+  DEVICE: 'cuda'
+  PRETRAINED: True
+
+DATA_DIR: 'dataset'
+SOLVER:
+  OPTIMIZER_NAME: 'Adam'
+  Adam_LR: 0.001
+  Adam_Beta1: 0.9
+  Adam_Beta2: 0.999
+  Adam_weight_decay: 0.00005
+  LR: 0.1
+  BATCH_SIZE: 64
+  SCHEDULER: 'Cosine'
+  
+OUTPUT_DIR: 'output/'
+
+DATASET:
+  IMAGESIZE: 224
+  NAME: 'cifar10'
+
+# RandomVerticalFlip RandAugment
+# python train.py --t RandomHorizontalFlip --out /home/zjt/pytorch-ensemble/project/output/base/base1
+# python train.py --t RandomVerticalFlip --out /home/zjt/pytorch-ensemble/project/output/base/base2 
+# python train.py --t RandAugment --out /home/zjt/pytorch-ensemble/project/output/base/base3
+# python train.py --t AutoAugment --out /home/zjt/pytorch-ensemble/project/output/base/base4
+# python train.py --t RandomSolarize --out /home/zjt/pytorch-ensemble/project/output/base/base5
+# python train.py --t RandomPerspective --out /home/zjt/pytorch-ensemble/project/output/base/base6
+# python train.py --t RandomEqualize --out /home/zjt/pytorch-ensemble/project/output/base/base7
