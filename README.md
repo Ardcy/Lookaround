@@ -7,6 +7,8 @@ $k$ steps around, 1 step average.
 
 Due to the use of various data augmentation techniques in our approach, our optimizer needs to be coupled with a dataloader that supports the different data augmentations.
 
+Here is an example using three data augmentation methods:
+
 ```python
 train_iter1 = iter(trainloaders[0])
 train_iter2 = iter(trainloaders[1])
