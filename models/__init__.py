@@ -2,7 +2,6 @@ from .resnet import *
 from .pytorch_pretrained_vit import ViT
 from .resnext import *
 from .vgg import *
-from .densenet import *
 import torch
 import torchvision.models as models
 import torchvision

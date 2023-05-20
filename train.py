@@ -24,7 +24,7 @@ def parse_option():
     parser.add_argument('--yaml_path', type=str, default='.yaml')
     parser.add_argument('--out', type=str, default='')
     parser.add_argument('--train_mode', type=str, default='TRAIN3')
-    parser.add_argument('--DATA_DIR', type=str, default="")
+    parser.add_argument('--data_dir', type=str, default="")
     parser.add_argument('--tnum', type=int, default=0)
     parser.add_argument('--batch_size', type=int, default=128)
     parser.add_argument('--frequency', type=int, default=1)
@@ -47,10 +47,10 @@ def parse_option():
     cfg.SOLVER.FREQUENCY = args.frequency
     cfg.MODEL.DEVICE_ID = args.cuda_id
     cfg.SOLVER.BATCH_SIZE = args.batch_size
-    cfg.DATA_DIR = args.DATA_DIR
+    cfg.DATA_DIR = args.data_dir
     if args.out != '':
         cfg.OUTPUT_DIR = args.out
-    if cfg.TRAIN_MODE == 'TRAINNM':
+    if cfg.TRAIN_MODE == 'TRAIN_LOOKAROUND':
         cfg.BUILD_TRANSFORM_NUM = args.tnum
     if args.optimizer != '':
         cfg.SOLVER.OPTIMIZER_NAME = args.optimizer
@@ -62,7 +62,134 @@ def parse_option():
     return cfg, args
 
 
-def train_imagenet_swa(cfg, is_greedy=False, T_num=6, is_image_net=True):
+def train_imagenet_sgd(cfg, is_image_net=True):
+    device = 'cuda:' + str(cfg.MODEL.DEVICE_ID)
+
+    TRANSFORM_list = ['RandomHorizontalFlip',
+                      'RandomVerticalFlip', 'RandAugment']
+    trainloaders = [build_dataloader(cfg, build_transforms(
+        cfg, transform), cfg.DATA_DIR, is_train=True) for transform in TRANSFORM_list]
+    test_t = build_transforms(cfg, 'test')
+    testloader = build_dataloader(cfg, test_t, cfg.DATA_DIR, is_train=False)
+    model = init_model(cfg)
+    device_ids = cfg.MODEL.GPU_IDS
+
+    if is_image_net or cfg.DATASET.IMAGESIZE == 224:
+        model = torch.nn.DataParallel(model, device_ids=device_ids)
+        device = 'cuda:' + str(device_ids[0])
+
+    model = model.to(device)
+    swa_model = torch.optim.swa_utils.AveragedModel(model)
+
+    optimizer = make_optimizer(cfg, model)
+    scheduler = make_scheduler(cfg, optimizer)
+    loss_function = make_loss(cfg)
+
+    iter_per_epoch = len(trainloaders[0])
+    warmup_scheduler = WarmUpLR(optimizer, iter_per_epoch)
+
+    output_dir = cfg.OUTPUT_DIR + args.yaml_path[0:-5] + '/'+f'TRAIN_SGD'
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    logger = setup_logger(f"output_dir {cfg.TRAIN_MODE}", output_dir, 0)
+    logger.info("Running with config:\n{}".format(cfg))
+    test_acc = []
+    best_acc1 = 0
+
+    for epoch in range(cfg.SOLVER.MAX_EPOCHS):
+        train_iter1 = iter(trainloaders[0])
+        train_iter2 = iter(trainloaders[1])
+        train_iter3 = iter(trainloaders[2])
+        logger.info(f"train model:  epoch: {epoch}")
+        model.train()
+        train_loss = 0
+        correct1 = 0
+        correct5 = 0
+        total = 0
+        tbar = tqdm(range(len(trainloaders[0])))
+        s = time.time()
+        net_time = 0
+        iter_time = 0
+        for batch_idx in tbar:
+            for x in [train_iter1, train_iter2, train_iter3]:
+                s = time.time()
+                inputs, targets = next(x)
+                iter_time += time.time() - s
+                s = time.time()
+                inputs = inputs.to(device)
+                targets = targets.to(device)
+                optimizer.zero_grad()
+                outputs = model(inputs)
+                loss = loss_function(outputs, targets)
+                loss.backward()
+                optimizer.step()
+
+            if epoch < cfg.SOLVER.WARM:
+                warmup_scheduler.step()
+            train_loss += loss.item()
+            total += targets.size(0)
+            acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
+            correct1 += acc1.item() * cfg.SOLVER.BATCH_SIZE / 100
+            correct5 += acc5.item() * cfg.SOLVER.BATCH_SIZE / 100
+            net_time += time.time() - s
+            s = time.time()
+            tbar.set_postfix({"lr": optimizer.state_dict()['param_groups'][0]['lr'], "loss": round(
+                train_loss/(batch_idx+1), 3), "Acc1": round(100.*correct1/total, 3), "Acc5": round(100.*correct5/total, 3), "iter_time": iter_time, "net_time": net_time})
+
+        logger.info(
+            f"lr: {optimizer.state_dict()['param_groups'][0]['lr']},loss:{round(train_loss/(batch_idx+1),3)},acc1:{round(100.*correct1/total,3)},acc5:{round(100.*correct5/total,3)}")
+
+        scheduler.step()
+
+        model.eval()
+        logger.info(f"eval model epoch: {epoch}")
+        test_loss = 0
+        correct1 = 0
+        correct5 = 0
+        total = 0
+        with torch.no_grad():
+            tbar = tqdm(testloader)
+            for batch_idx, (inputs, targets) in enumerate(tbar):
+                inputs = inputs.to(device)
+                targets = targets.to(device)
+                outputs = model(inputs)
+                loss = loss_function(outputs, targets)
+                test_loss += loss.item()
+                total += targets.size(0)
+                acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
+                correct1 += acc1.item()
+                correct5 += acc5.item()
+                tbar.set_postfix(
+                    {"Acc1": round(100.*correct1/total, 3), "Acc5": round(100.*correct5/total, 3)})
+
+        acc = (100.*correct1/total, 100.*correct5/total)
+        test_acc.append(acc)
+        logger.info(
+            f"lr: {optimizer.state_dict()['param_groups'][0]['lr']},loss:{round(test_loss/(batch_idx+1),3)},acc1:{round(100.*correct1/total,3)},acc5:{round(100.*correct5/total,3)}")
+
+        # save model
+        checkpoint = {
+            'epoch': epoch,
+            'model': model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+        }
+
+        if best_acc1 < test_acc[-1][0]:
+            best_acc1 = test_acc[-1][0]
+            torch.save(checkpoint, output_dir +
+                       f'/bestacc_{cfg.MODEL.NAME}.ckpt')
+
+        if epoch % cfg.SAVE_FREQ == 0:
+            torch.save(checkpoint, output_dir +
+                       f'/{cfg.MODEL.NAME}_{epoch}.ckpt')
+
+        torch.save(checkpoint, output_dir + f'/last_{cfg.MODEL.NAME}.ckpt')
+        np.save(output_dir + '/test_acc.npy', np.array(test_acc))
+
+    return
+
+
+def train_imagenet_swa(cfg, is_image_net=True):
     device = 'cuda:' + str(cfg.MODEL.DEVICE_ID)
 
     TRANSFORM_list = ['RandomHorizontalFlip',
@@ -236,7 +363,7 @@ def train_imagenet_swa(cfg, is_greedy=False, T_num=6, is_image_net=True):
     return
 
 
-def train_imagenet_swad(cfg, is_greedy=False, T_num=6, is_image_net=True):
+def train_imagenet_swad(cfg, is_image_net=True):
     device = 'cuda:' + str(cfg.MODEL.DEVICE_ID)
 
     TRANSFORM_list = ['RandomHorizontalFlip',
@@ -442,7 +569,7 @@ def train_imagenet_swad(cfg, is_greedy=False, T_num=6, is_image_net=True):
     return
 
 
-def trainnm_imagenet_lookaround(cfg, is_greedy=False, T_num=6, is_image_net=True):
+def trainnm_imagenet_lookaround(cfg, is_image_net=True):
     device = 'cuda:' + str(cfg.MODEL.DEVICE_ID)
     TRANSFORM_list = ['RandomHorizontalFlip',
                       'RandomHorizontalFlip', 'RandomHorizontalFlip']
@@ -466,7 +593,7 @@ def trainnm_imagenet_lookaround(cfg, is_greedy=False, T_num=6, is_image_net=True
     warmup_scheduler = WarmUpLR(optimizer, iter_per_epoch)
 
     output_dir = cfg.OUTPUT_DIR + \
-        args.yaml_path[0:-5] + '/'+f'TRAINNM_{cfg.SOLVER.FREQUENCY}'
+        args.yaml_path[0:-5] + '/'+f'TRAIN_Lookaround'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     logger = setup_logger(f"output_dir {cfg.TRAIN_MODE}", output_dir, 0)
@@ -566,7 +693,7 @@ def trainnm_imagenet_lookaround(cfg, is_greedy=False, T_num=6, is_image_net=True
     return
 
 
-def train_imagenet_lookahead(cfg, is_greedy=False, T_num=6, is_image_net=True):
+def train_imagenet_lookahead(cfg, is_image_net=True):
     device = 'cuda:' + str(cfg.MODEL.DEVICE_ID)
 
     TRANSFORM_list = ['RandomHorizontalFlip',
@@ -696,7 +823,7 @@ def train_imagenet_lookahead(cfg, is_greedy=False, T_num=6, is_image_net=True):
     return
 
 
-def train_imagenet_adamw(cfg, is_greedy=False, T_num=6, is_image_net=True):
+def train_imagenet_adamw(cfg, is_image_net=True):
 
     device = 'cuda:' + str(cfg.MODEL.DEVICE_ID)
     print(device)
@@ -829,7 +956,7 @@ def train_imagenet_adamw(cfg, is_greedy=False, T_num=6, is_image_net=True):
     return
 
 
-def train_imagenet_sam(cfg, is_greedy=False, T_num=6, is_image_net=True):
+def train_imagenet_sam(cfg, is_image_net=True):
     device = 'cuda:' + str(cfg.MODEL.DEVICE_ID)
     print(device)
     TRANSFORM_list = ['RandomHorizontalFlip',
@@ -969,21 +1096,20 @@ if __name__ == '__main__':
     else:
         is_imagenet = False
 
-    cfg.SOLVER.HEAD_NUM = 3
-    cfg.SOLVER.FREQUENCY = 5
-    cfg.BUILD_TRANSFORM_NUM = 3
+    cfg.SOLVER.HEAD_NUM = 3  # lookaround data augmentation num
+    cfg.SOLVER.FREQUENCY = 5  # lookaround steps k
 
     if args.train_mode == 'TRAIN_LOOKAROUND':
-        trainnm_imagenet_lookaround(cfg, T_num=3, is_image_net=is_imagenet)
+        trainnm_imagenet_lookaround(cfg, is_image_net=is_imagenet)
     elif args.train_mode == 'TRAIN_SGD':
-        train_imagenet_swa(cfg, T_num=3, is_image_net=is_imagenet)
+        train_imagenet_sgd(cfg, is_image_net=is_imagenet)
     elif args.train_mode == 'TRAIN_SWA':
-        train_imagenet_swa(cfg, T_num=3, is_image_net=is_imagenet)
+        train_imagenet_swa(cfg, is_image_net=is_imagenet)
     elif args.train_mode == 'TRAIN_LOOKAHEAD':
-        train_imagenet_lookahead(cfg, T_num=3, is_image_net=is_imagenet)
+        train_imagenet_lookahead(cfg, is_image_net=is_imagenet)
     elif args.train_mode == 'TRAIN_ADAMW':
-        train_imagenet_adamw(cfg, T_num=3, is_image_net=is_imagenet)
+        train_imagenet_adamw(cfg, is_image_net=is_imagenet)
     elif args.train_mode == 'TRAIN_SAM':
-        train_imagenet_sam(cfg, T_num=3, is_image_net=is_imagenet)
+        train_imagenet_sam(cfg, is_image_net=is_imagenet)
     elif args.train_mode == 'TRAIN_SWAD':
-        train_imagenet_swad(cfg, T_num=3, is_image_net=is_imagenet)
+        train_imagenet_swad(cfg, is_image_net=is_imagenet)
