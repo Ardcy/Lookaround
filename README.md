@@ -10,6 +10,9 @@ Due to the use of various data augmentation techniques in our approach, our opti
 Here is an example using three data augmentation methods:
 
 ```python
+from lookaround import Lookaround
+optimizer = Lookaround(net.parameters(), lr=cfg.SOLVER.LR, momentum=0.9, weight_decay=5e-4, head_num=3, frequence=5) # k=5
+
 train_iter1 = iter(trainloaders[0])
 train_iter2 = iter(trainloaders[1])
 train_iter3 = iter(trainloaders[2])
