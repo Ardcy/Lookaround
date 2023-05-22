@@ -56,8 +56,6 @@ Parameters:
 * CIFAR-100
 * ImageNet: Downloadable from https://image-net.org/download.php
 
-For downloaded data sets please place them in the 'dataset' folder.
-
 ## Requirements
 
 * PyTorch 1.0 or higher
