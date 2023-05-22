@@ -58,7 +58,7 @@ Parameters:
 
 ## Requirements
 
-* PyTorch 1.0 or higher
+* PyTorch 1.8 or higher
 * Python 3.6
   
 To run SGD training use the following command:
