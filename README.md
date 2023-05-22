@@ -28,7 +28,7 @@ for batch_idx in range(len(trainloaders[0])):
         optimizer.step()
 ```
 
-In our code, the invocation of our method is as follows:
+In our code, the invocation of different optimization methods is as follows:
 
 ```
 python3 train.py --yaml_path=<YAML_PATH> \
