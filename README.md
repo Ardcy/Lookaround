@@ -48,6 +48,21 @@ Parameters:
 * ```OUTPUT``` &mdash; output foloder
 * ```OPTIMIZER``` &mdash; optimizer name [Lookaround/SGD/Adam]
 
+## Data
+
+3 datasets were used in the paper:
+
+* CIFAR-10
+* CIFAR-100
+* ImageNet: Downloadable from https://image-net.org/download.php
+
+For downloaded data sets please place them in the 'dataset' folder.
+
+## Requirements
+
+* PyTorch 1.0 or higher
+* Python 3.6
+  
 To run SGD training use the following command:
 
 ```
