@@ -17,8 +17,8 @@ train_iter1 = iter(trainloaders[0])
 train_iter2 = iter(trainloaders[1])
 train_iter3 = iter(trainloaders[2])
 for batch_idx in range(len(trainloaders[0])):
-    for x in [train_iter1, train_iter2, train_iter3]:
-        inputs, targets = next(x)
+    for batch in [train_iter1, train_iter2, train_iter3]:
+        inputs, targets = next(batch)
         inputs = inputs.to(device)
         targets = targets.to(device)
         optimizer.zero_grad()
