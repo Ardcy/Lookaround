@@ -61,7 +61,7 @@ Parameters:
 * PyTorch 1.8 or higher
 * Python 3.6
   
-To run SGG or other optimization training use the following command:
+To run SGG or other optimization method use the following command:
 
 ```
 python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_SGD' --cuda_id=0 --data_dir='dataset/' --out='./out/' --optimizer='SGD'
