@@ -11,7 +11,7 @@ Here is an example using three data augmentation methods:
 
 ```python
 from lookaround import Lookaround
-optimizer = Lookaround(net.parameters(), lr=cfg.SOLVER.LR, momentum=0.9, weight_decay=5e-4, head_num=3, frequence=5) # k=5
+optimizer = Lookaround(net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4, head_num=3, frequence=5) # k=5
 
 train_iter1 = iter(trainloaders[0])
 train_iter2 = iter(trainloaders[1])
@@ -61,10 +61,20 @@ Parameters:
 * PyTorch 1.8 or higher
 * Python 3.6
   
-To run SGD training use the following command:
+To run SGG or other optimization training use the following command:
 
 ```
 python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_SGD' --cuda_id=0 --data_dir='dataset/' --out='./out/' --optimizer='SGD'
+
+python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_SWA' --cuda_id=0 --data_dir='dataset/' --out='./out/' --optimizer='SGD'
+
+python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_LOOKAHEAD' --cuda_id=0 --data_dir='dataset/' --out='./out/' --optimizer='SGD'
+
+python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_ADAMW' --cuda_id=0 --data_dir='dataset/' --out='./out/' 
+
+python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_SAM' --cuda_id=0 --data_dir='dataset/' --out='./out/'  --optimizer='SGD'
+
+python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_SWAD' --cuda_id=0 --data_dir='dataset/' --out='./out/' --optimizer='SGD'
 ```
 
 To run Lookaround training use the following command:
