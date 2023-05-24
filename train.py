@@ -129,8 +129,8 @@ def train_imagenet_sgd(cfg, is_image_net=True):
             train_loss += loss.item()
             total += targets.size(0)
             acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-            correct1 += acc1.item() * cfg.SOLVER.BATCH_SIZE / 100
-            correct5 += acc5.item() * cfg.SOLVER.BATCH_SIZE / 100
+            correct1 += acc1.item() * len(inputs) / 100
+            correct5 += acc5.item() * len(inputs) / 100
             net_time += time.time() - s
             s = time.time()
             tbar.set_postfix({"lr": optimizer.state_dict()['param_groups'][0]['lr'], "loss": round(
@@ -157,8 +157,8 @@ def train_imagenet_sgd(cfg, is_image_net=True):
                 test_loss += loss.item()
                 total += targets.size(0)
                 acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-                correct1 += acc1.item()
-                correct5 += acc5.item()
+                correct1 += acc1.item() * len(inputs) / 100
+                correct5 += acc5.item() * len(inputs) / 100
                 tbar.set_postfix(
                     {"Acc1": round(100.*correct1/total, 3), "Acc5": round(100.*correct5/total, 3)})
 
@@ -265,8 +265,8 @@ def train_imagenet_swa(cfg, is_image_net=True):
                 swa_model.update_parameters(model)
             total += targets.size(0)
             acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-            correct1 += acc1.item() * cfg.SOLVER.BATCH_SIZE / 100
-            correct5 += acc5.item() * cfg.SOLVER.BATCH_SIZE / 100
+            correct1 += acc1.item() * len(inputs) / 100
+            correct5 += acc5.item() * len(inputs) / 100
             net_time += time.time() - s
             s = time.time()
             tbar.set_postfix({"lr": optimizer.state_dict()['param_groups'][0]['lr'], "loss": round(
@@ -296,8 +296,8 @@ def train_imagenet_swa(cfg, is_image_net=True):
                 test_loss += loss.item()
                 total += targets.size(0)
                 acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-                correct1 += acc1.item()
-                correct5 += acc5.item()
+                correct1 += acc1.item() * len(inputs) / 100
+                correct5 += acc5.item() * len(inputs) / 100
                 tbar.set_postfix(
                     {"Acc1": round(100.*correct1/total, 3), "Acc5": round(100.*correct5/total, 3)})
 
@@ -346,8 +346,8 @@ def train_imagenet_swa(cfg, is_image_net=True):
             test_loss += loss.item()
             total += targets.size(0)
             acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-            correct1 += acc1.item()
-            correct5 += acc5.item()
+            correct1 += acc1.item() * len(inputs) / 100
+            correct5 += acc5.item() * len(inputs) / 100
 
             tbar.set_postfix(
                 {"Acc1": round(100.*correct1/total, 3), "Acc5": round(100.*correct5/total, 3)})
@@ -467,8 +467,8 @@ def train_imagenet_swad(cfg, is_image_net=True):
             train_loss += loss.item()
             total += targets.size(0)
             acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-            correct1 += acc1.item() * cfg.SOLVER.BATCH_SIZE / 100
-            correct5 += acc5.item() * cfg.SOLVER.BATCH_SIZE / 100
+            correct1 += acc1.item() * len(inputs) / 100
+            correct5 += acc5.item() * len(inputs) / 100
             net_time += time.time() - s
             s = time.time()
             tbar.set_postfix({"lr": optimizer.state_dict()['param_groups'][0]['lr'], "loss": round(
@@ -501,8 +501,8 @@ def train_imagenet_swad(cfg, is_image_net=True):
                 test_loss += loss.item()
                 total += targets.size(0)
                 acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-                correct1 += acc1.item()
-                correct5 += acc5.item()
+                correct1 += acc1.item() * len(inputs) / 100
+                correct5 += acc5.item() * len(inputs) / 100
                 tbar.set_postfix(
                     {"Acc1": round(100.*correct1/total, 3), "Acc5": round(100.*correct5/total, 3)})
 
@@ -553,8 +553,8 @@ def train_imagenet_swad(cfg, is_image_net=True):
 
             total += targets.size(0)
             acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-            correct1 += acc1.item()
-            correct5 += acc5.item()
+            correct1 += acc1.item() * len(inputs) / 100
+            correct5 += acc5.item() * len(inputs) / 100
 
             tbar.set_postfix(
                 {"Acc1": round(100.*correct1/total, 3), "Acc5": round(100.*correct5/total, 3)})
@@ -638,8 +638,8 @@ def trainnm_imagenet_lookaround(cfg, is_image_net=True):
             train_loss += loss.item()
             total += targets.size(0)
             acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-            correct1 += acc1.item() * cfg.SOLVER.BATCH_SIZE / 100
-            correct5 += acc5.item() * cfg.SOLVER.BATCH_SIZE / 100
+            correct1 += acc1.item() * len(inputs) / 100
+            correct5 += acc5.item() * len(inputs) / 100
             net_time += time.time() - s
             s = time.time()
             tbar.set_postfix({"lr": optimizer.state_dict()['param_groups'][0]['lr'], "loss": round(
@@ -665,8 +665,8 @@ def trainnm_imagenet_lookaround(cfg, is_image_net=True):
                 test_loss += loss.item()
                 total += targets.size(0)
                 acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-                correct1 += acc1.item()
-                correct5 += acc5.item()
+                correct1 += acc1.item() * len(inputs) / 100
+                correct5 += acc5.item() * len(inputs) / 100
                 tbar.set_postfix(
                     {"Acc1": round(100.*correct1/total, 3), "Acc5": round(100.*correct5/total, 3)})
 
@@ -764,8 +764,8 @@ def train_imagenet_lookahead(cfg, is_image_net=True):
             train_loss += loss.item()
             total += targets.size(0)
             acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-            correct1 += acc1.item() * cfg.SOLVER.BATCH_SIZE / 100
-            correct5 += acc5.item() * cfg.SOLVER.BATCH_SIZE / 100
+            correct1 += acc1.item() * len(inputs) / 100
+            correct5 += acc5.item() * len(inputs) / 100
             net_time += time.time() - s
             s = time.time()
             tbar.set_postfix({"lr": optimizer.state_dict()['param_groups'][0]['lr'], "loss": round(
@@ -791,8 +791,8 @@ def train_imagenet_lookahead(cfg, is_image_net=True):
                 test_loss += loss.item()
                 total += targets.size(0)
                 acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-                correct1 += acc1.item()
-                correct5 += acc5.item()
+                correct1 += acc1.item() * len(inputs) / 100
+                correct5 += acc5.item() * len(inputs) / 100
                 tbar.set_postfix(
                     {"Acc1": round(100.*correct1/total, 3), "Acc5": round(100.*correct5/total, 3)})
 
@@ -897,8 +897,8 @@ def train_imagenet_adamw(cfg, is_image_net=True):
 
             total += targets.size(0)
             acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-            correct1 += acc1.item() * cfg.SOLVER.BATCH_SIZE / 100
-            correct5 += acc5.item() * cfg.SOLVER.BATCH_SIZE / 100
+            correct1 += acc1.item() * len(inputs) / 100
+            correct5 += acc5.item() * len(inputs) / 100
             net_time += time.time() - s
             s = time.time()
             tbar.set_postfix({"lr": optimizer.state_dict()['param_groups'][0]['lr'], "loss": round(
@@ -924,8 +924,8 @@ def train_imagenet_adamw(cfg, is_image_net=True):
                 test_loss += loss.item()
                 total += targets.size(0)
                 acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-                correct1 += acc1.item()
-                correct5 += acc5.item()
+                correct1 += acc1.item() * len(inputs) / 100
+                correct5 += acc5.item() * len(inputs) / 100
                 tbar.set_postfix(
                     {"Acc1": round(100.*correct1/total, 3), "Acc5": round(100.*correct5/total, 3)})
 
@@ -1028,8 +1028,8 @@ def train_imagenet_sam(cfg, is_image_net=True):
             train_loss += loss.item()
             total += targets.size(0)
             acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-            correct1 += acc1.item() * cfg.SOLVER.BATCH_SIZE / 100
-            correct5 += acc5.item() * cfg.SOLVER.BATCH_SIZE / 100
+            correct1 += acc1.item() * len(inputs) / 100
+            correct5 += acc5.item() * len(inputs) / 100
             net_time += time.time() - s
             s = time.time()
             tbar.set_postfix({"lr": optimizer.state_dict()['param_groups'][0]['lr'], "loss": round(
@@ -1056,8 +1056,8 @@ def train_imagenet_sam(cfg, is_image_net=True):
                 test_loss += loss.item()
                 total += targets.size(0)
                 acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
-                correct1 += acc1.item()
-                correct5 += acc5.item()
+                correct1 += acc1.item() * len(inputs) / 100
+                correct5 += acc5.item() * len(inputs) / 100
                 tbar.set_postfix(
                     {"Acc1": round(100.*correct1/total, 3), "Acc5": round(100.*correct5/total, 3)})
 
