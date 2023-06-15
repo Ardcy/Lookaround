@@ -13,7 +13,7 @@ $k$ steps around, 1 step average](https://arxiv.org/abs/2306.07684).
 networks starting from one common checkpoint with various data augmentation.
 
 <div align="center">
-<img src="https://github.com/Ardcy/Lookaround/blob/main/alg.png" width="50%">
+<img src="https://github.com/Ardcy/Lookaround/blob/main/images/alg.png" width="50%">
 </div>
 
 
@@ -99,6 +99,15 @@ To run Lookaround training use the following command:
 python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_LOOKAROUND' --cuda_id=0 --data_dir='dataset/' --out='./out/' --optimizer='Lookaround'
 ```
 
+
+<div align="center">
+<img src="https://github.com/Ardcy/Lookaround/blob/main/images/CIFAR_table.png" width="50%">
+</div>
+
+
+<div align="center">
+<img src="https://github.com/Ardcy/Lookaround/blob/main/images/CIFAR100_figure.png" width="50%">
+</div>
 
 
 
