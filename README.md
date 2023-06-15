@@ -6,6 +6,22 @@
 This repository contains a PyTorch implementation of the Lookaround optimizer for DNNs from the paper [Lookaround Optimizer: 
 $k$ steps around, 1 step average](https://arxiv.org/abs/2306.07684).
 
+
+## Requirements
+
+* PyTorch 1.8 or higher
+* Python 3.6
+
+
+## Data
+
+3 datasets were used in the paper:
+
+* CIFAR-10
+* CIFAR-100
+* ImageNet: Downloadable from https://image-net.org/download.php
+
+
 # Usage
 
 Due to the use of various data augmentation techniques in our approach, our optimizer needs to be coupled with a dataloader that supports the different data augmentations.
@@ -44,26 +60,14 @@ python3 train.py --yaml_path=<YAML_PATH> \
 
 Parameters:
 
-* ```YAML_PATH``` &mdash; config yaml path to train
-* ```TRAIN_MODE``` &mdash; optimization method [ TRAIN_LOOKAROUND / TRAIN_SGD / TRAIN_SWA / TRAIN_LOOKAHEAD / TRAIN_ADAMW / TRAIN_SAM / TRAIN_SWAD ]
-* ```CUDA_ID``` &mdash; cuda device id
-* ```DATASET``` &mdash; dataset folder
-* ```OUTPUT``` &mdash; output foloder
-* ```OPTIMIZER``` &mdash; optimizer name [ Lookaround / SGD / Adam ]
+* `--YAML_PATH` : config yaml path to train
+* `--TRAIN_MODE` : optimization method ('TRAIN_LOOKAROUND' / 'TRAIN_SGD' / 'TRAIN_SWA' / 'TRAIN_LOOKAHEAD' / 'TRAIN_ADAMW' / 'TRAIN_SAM' / 'TRAIN_SWAD')
+* `--CUDA_ID` : cuda device id
+* `--DATASET` : dataset folder
+* `--OUTPUT` : output folder
+* `--OPTIMIZER` : optimizer name ('Lookaround' / 'SGD' / 'Adam')
 
-## Data
 
-3 datasets were used in the paper:
-
-* CIFAR-10
-* CIFAR-100
-* ImageNet: Downloadable from https://image-net.org/download.php
-
-## Requirements
-
-* PyTorch 1.8 or higher
-* Python 3.6
-  
 To run SGG or other optimization method use the following command:
 
 ```
