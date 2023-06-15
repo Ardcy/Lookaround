@@ -100,13 +100,13 @@ python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_LOOKAROU
 ```
 
 
-<div align="center">
-<img src="https://github.com/Ardcy/Lookaround/blob/main/images/CIFAR_table.png" width="50%">
+<div align="left">
+<img src="https://github.com/Ardcy/Lookaround/blob/main/images/CIFAR_table.png" width="80%">
 </div>
 
 
-<div align="center">
-<img src="https://github.com/Ardcy/Lookaround/blob/main/images/CIFAR100_figure.png" width="50%">
+<div align="left">
+<img src="https://github.com/Ardcy/Lookaround/blob/main/images/CIFAR100_figure.png" width="80%">
 </div>
 
 
