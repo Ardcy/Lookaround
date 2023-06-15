@@ -7,6 +7,16 @@ This repository contains a PyTorch implementation of the Lookaround optimizer fo
 $k$ steps around, 1 step average](https://arxiv.org/abs/2306.07684).
 
 
+## Overview
+
+**TLDR:** We propose Lookaround, a SGD-based optimizer that enjoys a diversity-in-locality exploration strategy. To seek flat minima within the loss basins, Lookaround iteratively averages the trained
+networks starting from one common checkpoint with various data augmentation.
+
+<div align="center">
+<img src="https://github.com/Ardcy/Lookaround/blob/main/alg.png" width="50%">
+</div>
+
+
 ## Requirements
 
 * PyTorch 1.8 or higher
@@ -88,6 +98,8 @@ To run Lookaround training use the following command:
 ```
 python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_LOOKAROUND' --cuda_id=0 --data_dir='dataset/' --out='./out/' --optimizer='Lookaround'
 ```
+
+
 
 
 ## Citation
