@@ -1,7 +1,10 @@
-# Lookaround optimizer
+# Lookaround Optimizer
 
-This repository contains a PyTorch implementation of the Lookaround optimizer for DNNs from the paper Lookaround Optimizer: 
-$k$ steps around, 1 step average.
+[![License: Apache](https://img.shields.io/badge/License-Apache-blue.svg)](LICENSE)
+[![arXiv](https://img.shields.io/badge/arXiv-2306.07684-b31b1b.svg)](https://arxiv.org/abs/2306.07684)
+
+This repository contains a PyTorch implementation of the Lookaround optimizer for DNNs from the paper [Lookaround Optimizer: 
+$k$ steps around, 1 step average](https://arxiv.org/abs/2306.07684).
 
 # Usage
 
@@ -42,11 +45,11 @@ python3 train.py --yaml_path=<YAML_PATH> \
 Parameters:
 
 * ```YAML_PATH``` &mdash; config yaml path to train
-* ```TRAIN_MODE``` &mdash; optimization method [TRAIN_LOOKAROUND/TRAIN_SGD/TRAIN_SWA/TRAIN_LOOKAHEAD/TRAIN_ADAMW/TRAIN_SAM/TRAIN_SWAD]
+* ```TRAIN_MODE``` &mdash; optimization method [ TRAIN_LOOKAROUND / TRAIN_SGD / TRAIN_SWA / TRAIN_LOOKAHEAD / TRAIN_ADAMW / TRAIN_SAM / TRAIN_SWAD ]
 * ```CUDA_ID``` &mdash; cuda device id
 * ```DATASET``` &mdash; dataset folder
 * ```OUTPUT``` &mdash; output foloder
-* ```OPTIMIZER``` &mdash; optimizer name [Lookaround/SGD/Adam]
+* ```OPTIMIZER``` &mdash; optimizer name [ Lookaround / SGD / Adam ]
 
 ## Data
 
@@ -81,3 +84,21 @@ To run Lookaround training use the following command:
 ```
 python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_LOOKAROUND' --cuda_id=0 --data_dir='dataset/' --out='./out/' --optimizer='Lookaround'
 ```
+
+
+## Citation
+
+If you find this work useful for your research, please cite our paper:
+
+```
+@article{zhang2023Lookaround,
+  title={Lookaround Optimizer: $k$ steps around, 1 step average},
+  author={Jiangtao Zhang and Shunyu Liu and Jie Song and Tongtian Zhu and Zhengqi Xu and Mingli Song},
+  journal={arXiv preprint arXiv:2306.07684},
+  year={2023}
+}
+```
+
+## Contact
+
+Please feel free to contact me via email (<zhjgtao@zju.edu.cn>) if you are interested in my research :)
