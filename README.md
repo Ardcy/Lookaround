@@ -13,7 +13,7 @@ $k$ steps around, 1 step average](https://arxiv.org/abs/2306.07684).
 * Python 3.6
 
 
-## Data
+## Datasets
 
 3 datasets were used in the paper:
 
