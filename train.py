@@ -1,5 +1,4 @@
 from tqdm import tqdm
-from utils import progress_bar
 from utils import set_random_seed, setup_logger, make_optimizer, make_scheduler, make_loss, WarmUpLR
 import numpy as np
 import argparse
