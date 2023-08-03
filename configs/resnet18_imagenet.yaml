@@ -1,5 +1,5 @@
 MODEL:
-  NAME: 'resnet50'
+  NAME: 'resnet18'
   DEVICE: 'cuda'
   CLASSES: 1000
   PRETRAINED: 'False'

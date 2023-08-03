@@ -1,0 +1,21 @@
+MODEL:
+  NAME: 'resnet101'
+  DEVICE: 'cuda'
+  CLASSES: 100
+  PRETRAINED: False
+
+DATA_DIR: 'dataset'
+
+DATASET:
+  IMAGESIZE: 32
+  NAME: 'cifar100'
+
+SOLVER:
+  OPTIMIZER_NAME: 'Lookaround'
+  MAX_EPOCHS: 200
+  SCHEDULER_MVALUE: [60, 120, 160]
+  LR: 0.1
+  SCHEDULER: 'MultiStepLR'
+  
+OUTPUT_DIR: 'output/'
+
