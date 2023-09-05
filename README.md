@@ -70,12 +70,12 @@ python3 train.py --yaml_path=<YAML_PATH> \
 
 Parameters:
 
-* `--YAML_PATH` : config yaml path to train
-* `--TRAIN_MODE` : optimization method ('TRAIN_LOOKAROUND' / 'TRAIN_SGD' / 'TRAIN_SWA' / 'TRAIN_LOOKAHEAD' / 'TRAIN_ADAMW' / 'TRAIN_SAM' / 'TRAIN_SWAD')
-* `--CUDA_ID` : cuda device id
-* `--DATASET` : dataset folder
-* `--OUTPUT` : output folder
-* `--OPTIMIZER` : optimizer name ('Lookaround' / 'SGD' / 'Adam')
+* `--yaml_path` : config yaml path to train
+* `--train_mode` : optimization method ('TRAIN_LOOKAROUND' / 'TRAIN_SGD' / 'TRAIN_SWA' / 'TRAIN_LOOKAHEAD' / 'TRAIN_ADAMW' / 'TRAIN_SAM' / 'TRAIN_SWAD')
+* `--cuda_id` : cuda device id
+* `--data_dir` : dataset folder
+* `--out` : output folder
+* `--optimizer` : optimizer name ('Lookaround' / 'SGD' / 'Adam')
 
 
 To run SGG or other optimization method use the following command:
