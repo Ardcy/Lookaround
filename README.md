@@ -1,4 +1,4 @@
-# Lookaround Optimizer
+# [NeurIPS 2023] Lookaround Optimizer
 
 [![License: Apache](https://img.shields.io/badge/License-Apache-blue.svg)](LICENSE)
 [![arXiv](https://img.shields.io/badge/arXiv-2306.07684-b31b1b.svg)](https://arxiv.org/abs/2306.07684)
@@ -116,10 +116,10 @@ python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_LOOKAROU
 If you find this work useful for your research, please cite our paper:
 
 ```
-@article{zhang2023Lookaround,
+@inproceedings{zhang2023Lookaround,
   title={Lookaround Optimizer: $k$ steps around, 1 step average},
   author={Jiangtao Zhang and Shunyu Liu and Jie Song and Tongtian Zhu and Zhengqi Xu and Mingli Song},
-  journal={arXiv preprint arXiv:2306.07684},
+  booktitle={Advances in Neural Information Processing Systems},
   year={2023}
 }
 ```
