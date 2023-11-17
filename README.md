@@ -71,7 +71,7 @@ python train.py --yaml_path=<YAML_PATH> \
 Parameters:
 
 * `--yaml_path` : config yaml path to train
-* `--train_mode` : optimization method (`'TRAIN_LOOKAROUND'` / `'TRAIN_SGD'` / `'TRAIN_SWA'` / `'TRAIN_LOOKAHEAD'` / `'TRAIN_ADAMW'` / `'TRAIN_SAM'` / `'TRAIN_SWAD'`)
+* `--train_mode` : optimization method (`'TRAIN_LOOKAROUND'` / `'TRAIN_SGD'` / `'TRAIN_SWA'` / `'TRAIN_LOOKAHEAD'` / `'TRAIN_SWAD'`)
 * `--cuda_id` : cuda device id
 * `--data_dir` : dataset folder
 * `--out` : output folder
@@ -86,10 +86,6 @@ python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_SGD' --c
 python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_SWA' --cuda_id=0 --data_dir='dataset/' --out='./out/' --optimizer='SGD'
 
 python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_LOOKAHEAD' --cuda_id=0 --data_dir='dataset/' --out='./out/' --optimizer='SGD'
-
-python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_ADAMW' --cuda_id=0 --data_dir='dataset/' --out='./out/' 
-
-python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_SAM' --cuda_id=0 --data_dir='dataset/' --out='./out/'  --optimizer='SGD'
 
 python train.py --yaml_path='resnet50_cifar10.yaml' --train_mode='TRAIN_SWAD' --cuda_id=0 --data_dir='dataset/' --out='./out/' --optimizer='SGD'
 ```

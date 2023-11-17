@@ -14,7 +14,30 @@ import cv2
 from IPython import embed
 import torchvision
 from torchvision.datasets import ImageFolder
+from typing import Iterator, Sequence
+from torch.utils.data import Sampler
 
+class SubsetRandomSampler(Sampler[int]):
+    r"""Samples elements randomly from a given list of indices, without replacement.
+
+    Args:
+        indices (sequence): a sequence of indices
+        generator (Generator): Generator used in sampling.
+    """
+    indices: Sequence[int]
+
+    def __init__(self, indices: Sequence[int], generator=None) -> None:
+        self.indices = indices
+        self.generator = generator
+
+    def __iter__(self) -> Iterator[int]:
+        for i in torch.randperm(len(self.indices), generator=self.generator):
+            # print(self.indices[i], self.indices[0], i)
+            yield self.indices[i]
+
+    def __len__(self) -> int:
+        return len(self.indices)
+    
 class CIFAR10(VisionDataset):
     """`CIFAR10 <https://www.cs.toronto.edu/~kriz/cifar.html>`_ Dataset.
 
@@ -300,7 +323,7 @@ def build_transforms(cfg, method):
 
 def build_dataloader(cfg, transform, data_dir, is_train, batchsize=100):
 
-    normalize = torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406],
+    imagenet_normalize = torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                                  std=[0.229, 0.224, 0.225])
 
     if cfg.DATASET.NAME == 'cifar10':
@@ -322,11 +345,19 @@ def build_dataloader(cfg, transform, data_dir, is_train, batchsize=100):
                     transforms.Resize(256),
                     transforms.CenterCrop(224),
                     transforms.ToTensor(),
-                    normalize,
+                    imagenet_normalize,
                 ]))
     if is_train == True:
+        if cfg.TRAIN_MODE == "TRAIN_LOOKAROUND":
+            indices = torch.randperm(len(dataset)).tolist() 
+            gen = torch.Generator()
+            gen.manual_seed(cfg.SEED)
+            sampler = SubsetRandomSampler(indices, gen) 
+        else:
+            sampler = None
+
         dataloader = torch.utils.data.DataLoader(
-            dataset, batch_size=cfg.SOLVER.BATCH_SIZE, shuffle=True, num_workers=32, drop_last=True, pin_memory=True)
+            dataset, batch_size=cfg.SOLVER.BATCH_SIZE, sampler=sampler, shuffle=True, num_workers=32, drop_last=True, pin_memory=True)
     else:
         dataloader = torch.utils.data.DataLoader(
             dataset, batch_size=batchsize, shuffle=False, num_workers=32, drop_last=True, pin_memory=True)
