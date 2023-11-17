@@ -13,7 +13,7 @@ $k$ steps around, 1 step average](https://arxiv.org/abs/2306.07684).
 networks starting from one common checkpoint with various data augmentation.
 
 <div align="center">
-<img src="https://github.com/Ardcy/Lookaround/blob/main/images/alg.png" width="50%">
+<img src="https://github.com/Ardcy/Lookaround/blob/main/images/Lookaround_Optimizer.png" width="50%">
 </div>
 
 
